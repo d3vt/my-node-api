@@ -1,24 +1,26 @@
-
+require('dotenv').config();
 const express = require('express');
 const sql = require('mssql');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;  // خلي المنفذ من المتغير البيئي أو 3000 افتراضياً
 
 app.use(express.json());
 app.use(cors());
 
 const config = {
-    user: 'sa',
-    password: '777381236m',
-    server: 'localhost\\MYSQL',
-    database: 'DBlibraly',
+    user: process.env.DB_USER,                  // من متغير البيئة
+    password: process.env.DB_PASSWORD,          // من متغير البيئة
+    server: process.env.DB_SERVER,              // من متغير البيئة
+    database: process.env.DB_DATABASE,          // من متغير البيئة
+    port: parseInt(process.env.DB_PORT) || 1433, // من متغير البيئة أو 1433
     options: {
         encrypt: false,
         enableArithAbort: true
     }
 };
+
 
 sql.connect(config).then(pool => {
     if (pool.connected) console.log("Connected to MSSQL");
@@ -465,5 +467,5 @@ app.get('/api/book_author/mualif', async (req, res) => {
 
 
 
-app.listen(port, '172.31.64.1', () => console.log(`Server running on http://172.31.64.1:${port}`));
+app.listen(port, () => console.log(`Server running on port ${port}`));
 }).catch(err => console.error("Database connection failed:", err));
